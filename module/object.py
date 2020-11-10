@@ -12,7 +12,7 @@ class Object(object):
         self.__w = w
         self.__h = h
         self.list_pyxels = []
-        
+
     @property
     def x(self):
         return self.__x
@@ -60,14 +60,14 @@ class Grand_Roc(Object):
     def __init__(self, x, y, u, v, w, h):
         super().__init__(x, y, u, v, w, h)
         self.list_pyxels = self.fill_list_pixels(x, y)
-    
+
     def fill_list_pixels(self, x, y):
         tab_pyxels = []
 
         tab_pyxels.append([x, y+10])
         tab_pyxels.append([x, y+11])
         tab_pyxels.append([x, y+12])
-        
+
         tab_pyxels.append([x+1, y+5])
         tab_pyxels.append([x+1, y+6])
         tab_pyxels.append([x+1, y+7])
@@ -131,10 +131,10 @@ class Moyen_Roc(Object):
     def __init__(self, x, y, u, v, w, h):
         super().__init__(x, y, u, v, w, h)
         self.list_pyxels = self.fill_list_pixels(x, y)
-    
+
     def fill_list_pixels(self, x, y):
         tab_pyxels = []
-        
+
         tab_pyxels.append([x+1, y+4])
         tab_pyxels.append([x+1, y+5])
 
@@ -188,10 +188,10 @@ class Petit_Roc(Object):
     def __init__(self, x, y, u, v, w, h):
         super().__init__(x, y, u, v, w, h)
         self.list_pyxels = self.fill_list_pixels(x, y)
-    
+
     def fill_list_pixels(self, x, y):
         tab_pyxels = []
-        
+
         tab_pyxels.append([x+3, y+5])
 
         tab_pyxels.append([x+4, y+4])

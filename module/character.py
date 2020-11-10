@@ -1,15 +1,17 @@
 """
-    player.py : Class Player
+    character.py : Character Class
 """
 
-# Player class
-class Player(object):
+class Character(object):
+    """
+        Character class
+    """
     def __init__(self, x, y, life):
         self.__x = x
         self.__y = y
         self.__life = life
         self.__life_max = life
-        
+
     @property
     def x(self):
         return self.__x
@@ -37,3 +39,19 @@ class Player(object):
     @life_max.setter
     def life_max(self, value):
         self.__life_max = value
+
+
+class Player(Character):
+    """
+        Player class
+    """
+    def __init__(self, x, y, life):
+        super().__init__(x, y, life)
+
+
+class Enemy(Character):
+    """
+        Enemy class
+    """
+    def __init__(self, x, y, life):
+        super().__init__(x, y, life)

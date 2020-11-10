@@ -8,7 +8,7 @@ from math import ceil
 import pyxel
 
 from module.object import Moyen_Roc, Grand_Roc, Petit_Roc
-from module.player import Player
+from module.character import Enemy, Player
 
 # Main class
 class Game(object):
@@ -30,6 +30,8 @@ class Game(object):
 
         # Player
         self.player = Player(randint(0, 255), randint(0, 255), 10)
+        # Enemies
+        self.enemies = [Enemy(randint(0, 255), randint(0, 255), 10) for _ in range(5)]
 
         pyxel.run(self.update, self.draw)
 
@@ -38,6 +40,12 @@ class Game(object):
             Aspect of the player
         """
         pyxel.circ(player.x, player.y, 3, 10)
+
+    def draw_enemy(self, enemy):
+        """
+            Aspect of the enemy
+        """
+        pyxel.circ(enemy.x, enemy.y, 3, 8)
 
     def draw_heart(self):
         """
@@ -64,7 +72,7 @@ class Game(object):
             for pyx in obj.list_pyxels:
                 list_pyxel.append(pyx)
 
-        # Action detection
+        # Player's actions
         if pyxel.btn(pyxel.KEY_K) and [self.player.x-1, self.player.y] not in list_pyxel and self.player.x > 0:
             self.player.x = (self.player.x - 1)
         elif pyxel.btn(pyxel.KEY_O) and [self.player.x, self.player.y-1] not in list_pyxel and self.player.y > 0:
@@ -73,6 +81,8 @@ class Game(object):
             self.player.x = (self.player.x + 1)
         elif pyxel.btn(pyxel.KEY_L) and [self.player.x, self.player.y+1] not in list_pyxel and self.player.y < 255:
             self.player.y = (self.player.y + 1)
+
+        # Enemies movement
 
     def draw(self):
         """
@@ -84,6 +94,9 @@ class Game(object):
             pyxel.blt(obj.x, obj.y, 0, obj.u, obj.v, obj.w, obj.h, 13)
         # Player
         self.draw_player(self.player)
+        # Enemies
+        for enemy in self.enemies:
+            self.draw_enemy(enemy)
         # Health bar
         self.draw_heart()
 

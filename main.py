@@ -3,7 +3,7 @@
 """
 
 from random import randint
-from math import ceil
+from math import ceil, sqrt
 
 import pyxel
 
@@ -63,6 +63,9 @@ class Game(object):
             else:
                 pyxel.blt(1+(9*i), 1, 0, 48-(8*(3-abs(self.player.life-((i+1)*3)))), 16, 8, 8, 13)
 
+    def distance(self, player, enemy):
+        return sqrt(abs(player.x-enemy.x)**2+abs(player.y-enemy.y)**2)
+
     def update(self):
         """
             Update function
@@ -75,14 +78,20 @@ class Game(object):
         # Player's actions
         if pyxel.btn(pyxel.KEY_K) and [self.player.x-1, self.player.y] not in list_pyxel and self.player.x > 0:
             self.player.x = (self.player.x - 1)
-        elif pyxel.btn(pyxel.KEY_O) and [self.player.x, self.player.y-1] not in list_pyxel and self.player.y > 0:
+        if pyxel.btn(pyxel.KEY_O) and [self.player.x, self.player.y-1] not in list_pyxel and self.player.y > 0:
             self.player.y = (self.player.y - 1)
-        elif pyxel.btn(pyxel.KEY_M) and [self.player.x+1, self.player.y] not in list_pyxel and self.player.x < 255:
+        if pyxel.btn(pyxel.KEY_M) and [self.player.x+1, self.player.y] not in list_pyxel and self.player.x < 255:
             self.player.x = (self.player.x + 1)
-        elif pyxel.btn(pyxel.KEY_L) and [self.player.x, self.player.y+1] not in list_pyxel and self.player.y < 255:
+        if pyxel.btn(pyxel.KEY_L) and [self.player.x, self.player.y+1] not in list_pyxel and self.player.y < 255:
             self.player.y = (self.player.y + 1)
 
         # Enemies movement
+        for enemy in self.enemies:
+            if 10<self.distance(self.player, enemy)<50:
+                if abs(self.player.x-enemy.x)>0 and [(enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x))), enemy.y] not in list_pyxel:
+                    enemy.x = (enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x)))
+                if abs(self.player.y-enemy.y)>0 and [enemy.x, (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))] not in list_pyxel:
+                    enemy.y = (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))
 
     def draw(self):
         """

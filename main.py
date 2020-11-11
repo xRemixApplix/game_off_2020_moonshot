@@ -82,6 +82,14 @@ class Game(object):
 
         return list_pyxel
 
+    def get_list_enemies(self, enemy_target):
+        enemies_pyxel = []
+        for enemy in self.enemies:
+            if enemy!=enemy_target:
+                enemies_pyxel += enemy.get_list_pyxels()
+
+        return enemies_pyxel
+
     def update(self):
         """
             Update function
@@ -109,10 +117,10 @@ class Game(object):
 
         # Enemies movement
         for enemy in self.enemies:
-            if 50<self.get_distance(self.player, enemy)<100:
-                if abs(self.player.x-enemy.x)>0 and [(enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x))), enemy.y] not in list_pyxel:
+            if 20<self.get_distance(self.player, enemy)<100:
+                if abs(self.player.x-enemy.x)>0 and [(enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x))), enemy.y] not in list_pyxel and [(enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x))), enemy.y] not in self.get_list_enemies(enemy):
                     enemy.x = (enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x)))
-                if abs(self.player.y-enemy.y)>0 and [enemy.x, (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))] not in list_pyxel:
+                if abs(self.player.y-enemy.y)>0 and [enemy.x, (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))] not in list_pyxel and [enemy.x, (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))] not in self.get_list_enemies(enemy):
                     enemy.y = (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))
 
         # Projectiles explosion
@@ -129,8 +137,8 @@ class Game(object):
 
         # Projectiles out of the screen
         for projectile in self.projectiles:
-            if 0<projectile.x<255 or 0<projectile.y<255:
-                self.projectiles.remove(projectiles)
+            if 0>projectile.x>255 or 0>projectile.y>255:
+                self.projectiles.remove(projectile)
 
     def draw(self):
         """

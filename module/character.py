@@ -55,3 +55,16 @@ class Enemy(Character):
     """
     def __init__(self, x, y, life):
         super().__init__(x, y, life)
+
+    def get_list_pyxels(self):
+        tab_pyxels = []
+
+        for i in range(-1, 2): tab_pyxels.append([self.x-3, self.y+i])
+        for i in range(-2, 3): tab_pyxels.append([self.x-2, self.y+i])
+        for i in range(-3, 4): tab_pyxels.append([self.x-1, self.y+i])
+        for i in range(-3, 4): tab_pyxels.append([self.x, self.y+i])
+        for i in range(-3, 4): tab_pyxels.append([self.x+1, self.y+i])
+        for i in range(-2, 3): tab_pyxels.append([self.x+2, self.y+i])
+        for i in range(-1, 2): tab_pyxels.append([self.x+3, self.y+i])
+
+        return tab_pyxels

@@ -9,6 +9,7 @@ import pyxel
 
 from module.object import Moyen_Roc, Grand_Roc, Petit_Roc
 from module.character import Enemy, Player
+from module.projectile import Projectile
 
 # Main class
 class Game(object):
@@ -32,6 +33,8 @@ class Game(object):
         self.player = Player(randint(0, 255), randint(0, 255), 10)
         # Enemies
         self.enemies = [Enemy(randint(0, 255), randint(0, 255), 10) for _ in range(5)]
+        # Projectiles
+        self.projectiles = []
 
         pyxel.run(self.update, self.draw)
 
@@ -63,31 +66,45 @@ class Game(object):
             else:
                 pyxel.blt(1+(9*i), 1, 0, 48-(8*(3-abs(self.player.life-((i+1)*3)))), 16, 8, 8, 13)
 
-    def distance(self, player, enemy):
+    def draw_projectile(self, projectile):
+        pyxel.circ(projectile.x, projectile.y, 1, 7)
+
+    def get_distance(self, player, enemy):
         return sqrt(abs(player.x-enemy.x)**2+abs(player.y-enemy.y)**2)
+
+    def get_list_object(self):
+        list_pyxel = []
+        for obj in self.list_object: list_pyxel += obj.list_pyxels
+
+        return list_pyxel
 
     def update(self):
         """
             Update function
         """
-        list_pyxel = []
-        for obj in self.list_object:
-            for pyx in obj.list_pyxels:
-                list_pyxel.append(pyx)
+        list_pyxel = self.get_list_object()
+        dx = dy = 0
 
         # Player's actions
         if pyxel.btn(pyxel.KEY_K) and [self.player.x-1, self.player.y] not in list_pyxel and self.player.x > 0:
             self.player.x = (self.player.x - 1)
+            dx = -1
         if pyxel.btn(pyxel.KEY_O) and [self.player.x, self.player.y-1] not in list_pyxel and self.player.y > 0:
             self.player.y = (self.player.y - 1)
+            dy = -1
         if pyxel.btn(pyxel.KEY_M) and [self.player.x+1, self.player.y] not in list_pyxel and self.player.x < 255:
             self.player.x = (self.player.x + 1)
+            dx = 1
         if pyxel.btn(pyxel.KEY_L) and [self.player.x, self.player.y+1] not in list_pyxel and self.player.y < 255:
             self.player.y = (self.player.y + 1)
+            dy = 1
+
+        if pyxel.btnp(pyxel.KEY_SPACE) and (dx != dy):
+                self.projectiles.append(Projectile(self.player.x, self.player.y, dx, dy))
 
         # Enemies movement
         for enemy in self.enemies:
-            if 10<self.distance(self.player, enemy)<50:
+            if 50<self.get_distance(self.player, enemy)<100:
                 if abs(self.player.x-enemy.x)>0 and [(enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x))), enemy.y] not in list_pyxel:
                     enemy.x = (enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x)))
                 if abs(self.player.y-enemy.y)>0 and [enemy.x, (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))] not in list_pyxel:
@@ -106,6 +123,10 @@ class Game(object):
         # Enemies
         for enemy in self.enemies:
             self.draw_enemy(enemy)
+        # Projectiles
+        for projectile in self.projectiles:
+            projectile.update_position()
+            self.draw_projectile(projectile)
         # Health bar
         self.draw_heart()
 

@@ -55,7 +55,6 @@ class Object(object):
     def h(self, value):
         self.__h = value
 
-
 class Grand_Roc(Object):
     def __init__(self, x, y, u, v, w, h):
         super().__init__(x, y, u, v, w, h)

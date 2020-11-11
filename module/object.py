@@ -63,66 +63,22 @@ class Grand_Roc(Object):
     def fill_list_pixels(self, x, y):
         tab_pyxels = []
 
-        tab_pyxels.append([x, y+10])
-        tab_pyxels.append([x, y+11])
-        tab_pyxels.append([x, y+12])
-
-        tab_pyxels.append([x+1, y+5])
-        tab_pyxels.append([x+1, y+6])
-        tab_pyxels.append([x+1, y+7])
-        tab_pyxels.append([x+1, y+8])
-        tab_pyxels.append([x+1, y+9])
-        tab_pyxels.append([x+1, y+13])
-
-        tab_pyxels.append([x+2, y+2])
-        tab_pyxels.append([x+2, y+3])
-        tab_pyxels.append([x+2, y+4])
-        tab_pyxels.append([x+2, y+13])
-
-        tab_pyxels.append([x+3, y+1])
-        tab_pyxels.append([x+3, y+14])
-
-        tab_pyxels.append([x+4, y])
-        tab_pyxels.append([x+4, y+14])
-
-        tab_pyxels.append([x+5, y])
-        tab_pyxels.append([x+5, y+14])
-
-        tab_pyxels.append([x+6, y])
-        tab_pyxels.append([x+6, y+15])
-
-        tab_pyxels.append([x+7, y])
-        tab_pyxels.append([x+7, y+15])
-
-        tab_pyxels.append([x+8, y+1])
-        tab_pyxels.append([x+8, y+15])
-
-        tab_pyxels.append([x+9, y+2])
-        tab_pyxels.append([x+9, y+15])
-
-        tab_pyxels.append([x+10, y+2])
-        tab_pyxels.append([x+10, y+15])
-
-        tab_pyxels.append([x+11, y+2])
-        tab_pyxels.append([x+11, y+15])
-
-        tab_pyxels.append([x+12, y+3])
-        tab_pyxels.append([x+12, y+14])
-
-        tab_pyxels.append([x+13, y+3])
-        tab_pyxels.append([x+13, y+14])
-
-        tab_pyxels.append([x+14, y+4])
-        tab_pyxels.append([x+14, y+5])
-        tab_pyxels.append([x+14, y+6])
-        tab_pyxels.append([x+14, y+13])
-
-        tab_pyxels.append([x+15, y+7])
-        tab_pyxels.append([x+15, y+8])
-        tab_pyxels.append([x+15, y+9])
-        tab_pyxels.append([x+15, y+10])
-        tab_pyxels.append([x+15, y+11])
-        tab_pyxels.append([x+15, y+12])
+        for i in range(10, 13): tab_pyxels.append([x, y+i])
+        for i in range(5, 14): tab_pyxels.append([x+1, y+i])
+        for i in range(2, 14): tab_pyxels.append([x+2, y+i])
+        for i in range(1, 15): tab_pyxels.append([x+3, y+i])
+        for i in range(15): tab_pyxels.append([x+4, y+i])
+        for i in range(15): tab_pyxels.append([x+5, y+i])
+        for i in range(16): tab_pyxels.append([x+6, y+i])
+        for i in range(16): tab_pyxels.append([x+7, y+i])
+        for i in range(1, 16): tab_pyxels.append([x+8, y+i])
+        for i in range(2, 16): tab_pyxels.append([x+9, y+i])
+        for i in range(2, 16): tab_pyxels.append([x+10, y+i])
+        for i in range(2, 16): tab_pyxels.append([x+11, y+i])
+        for i in range(3, 15): tab_pyxels.append([x+12, y+i])
+        for i in range(3, 15): tab_pyxels.append([x+13, y+i])
+        for i in range(4, 14): tab_pyxels.append([x+14, y+i])
+        for i in range(7, 13): tab_pyxels.append([x+15, y+i])
 
         return tab_pyxels
 
@@ -134,52 +90,21 @@ class Moyen_Roc(Object):
     def fill_list_pixels(self, x, y):
         tab_pyxels = []
 
-        tab_pyxels.append([x+1, y+4])
-        tab_pyxels.append([x+1, y+5])
-
-        tab_pyxels.append([x+2, y+3])
-        tab_pyxels.append([x+2, y+5])
-
-        tab_pyxels.append([x+3, y+3])
-        tab_pyxels.append([x+3, y+6])
-
-        tab_pyxels.append([x+4, y+1])
-        tab_pyxels.append([x+4, y+2])
-        tab_pyxels.append([x+4, y+7])
-
-        tab_pyxels.append([x+5, y])
-        tab_pyxels.append([x+5, y+7])
-
-        tab_pyxels.append([x+6, y])
-        tab_pyxels.append([x+6, y+6])
-
-        tab_pyxels.append([x+7, y])
-        tab_pyxels.append([x+7, y+6])
-
-        tab_pyxels.append([x+8, y])
-        tab_pyxels.append([x+8, y+6])
-
-        tab_pyxels.append([x+9, y])
-        tab_pyxels.append([x+9, y+6])
-
-        tab_pyxels.append([x+10, y])
-        tab_pyxels.append([x+10, y+6])
-
-        tab_pyxels.append([x+11, y])
-        tab_pyxels.append([x+11, y+6])
-
-        tab_pyxels.append([x+12, y])
-        tab_pyxels.append([x+12, y+6])
-
-        tab_pyxels.append([x+13, y+1])
-        tab_pyxels.append([x+13, y+5])
-
-        tab_pyxels.append([x+14, y+2])
-        tab_pyxels.append([x+14, y+5])
-
-        tab_pyxels.append([x+15, y+3])
-        tab_pyxels.append([x+15, y+4])
-        tab_pyxels.append([x+15, y+5])
+        for i in range(4, 6): tab_pyxels.append([x+1, y+i])
+        for i in range(3, 6): tab_pyxels.append([x+2, y+i])
+        for i in range(3, 7): tab_pyxels.append([x+3, y+i])
+        for i in range(1, 8): tab_pyxels.append([x+4, y+i])
+        for i in range(8): tab_pyxels.append([x+5, y+i])
+        for i in range(7): tab_pyxels.append([x+6, y+i])
+        for i in range(7): tab_pyxels.append([x+7, y+i])
+        for i in range(7): tab_pyxels.append([x+8, y+i])
+        for i in range(7): tab_pyxels.append([x+9, y+i])
+        for i in range(7): tab_pyxels.append([x+10, y+i])
+        for i in range(7): tab_pyxels.append([x+11, y+i])
+        for i in range(7): tab_pyxels.append([x+12, y+i])
+        for i in range(1, 6): tab_pyxels.append([x+13, y+i])
+        for i in range(2, 6): tab_pyxels.append([x+14, y+i])
+        for i in range(3, 6): tab_pyxels.append([x+15, y+i])
 
         return tab_pyxels
 
@@ -191,35 +116,15 @@ class Petit_Roc(Object):
     def fill_list_pixels(self, x, y):
         tab_pyxels = []
 
-        tab_pyxels.append([x+3, y+5])
-
-        tab_pyxels.append([x+4, y+4])
-        tab_pyxels.append([x+4, y+5])
-
-        tab_pyxels.append([x+5, y+3])
-        tab_pyxels.append([x+5, y+5])
-
-        tab_pyxels.append([x+6, y+1])
-        tab_pyxels.append([x+6, y+2])
-        tab_pyxels.append([x+6, y+6])
-
-        tab_pyxels.append([x+7, y])
-        tab_pyxels.append([x+7, y+6])
-
-        tab_pyxels.append([x+8, y])
-        tab_pyxels.append([x+8, y+6])
-
-        tab_pyxels.append([x+9, y])
-        tab_pyxels.append([x+9, y+6])
-
-        tab_pyxels.append([x+10, y+1])
-        tab_pyxels.append([x+10, y+6])
-
-        tab_pyxels.append([x+11, y+2])
-        tab_pyxels.append([x+11, y+3])
-        tab_pyxels.append([x+11, y+5])
-
-        tab_pyxels.append([x+12, y+4])
-        tab_pyxels.append([x+12, y+5])
+        for i in range(6): tab_pyxels.append([x+3, y+i])
+        for i in range(4, 6): tab_pyxels.append([x+4, y+i])
+        for i in range(3, 6): tab_pyxels.append([x+5, y+i])
+        for i in range(1, 7): tab_pyxels.append([x+6, y+i])
+        for i in range(7): tab_pyxels.append([x+7, y+i])
+        for i in range(7): tab_pyxels.append([x+8, y+i])
+        for i in range(7): tab_pyxels.append([x+9, y+i])
+        for i in range(1, 7): tab_pyxels.append([x+10, y+i])
+        for i in range(2, 6): tab_pyxels.append([x+11, y+i])
+        for i in range(4, 6): tab_pyxels.append([x+12, y+i])
 
         return tab_pyxels

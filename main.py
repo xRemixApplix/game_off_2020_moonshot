@@ -35,6 +35,7 @@ class Game(object):
         self.enemies = [Enemy(randint(0, 255), randint(0, 255), 10) for _ in range(5)]
         # Projectiles
         self.projectiles = []
+        self.explosions = []
 
         pyxel.run(self.update, self.draw)
 
@@ -69,8 +70,11 @@ class Game(object):
     def draw_projectile(self, projectile):
         pyxel.circ(projectile.x, projectile.y, 1, 7)
 
-    def get_distance(self, player, enemy):
-        return sqrt(abs(player.x-enemy.x)**2+abs(player.y-enemy.y)**2)
+    def draw_explosion(self, explosion):
+        pyxel.circ(explosion.x, explosion.y, 6, 14)
+
+    def get_distance(self, var_1, var_2):
+        return sqrt(abs(var_1.x-var_2.x)**2+abs(var_1.y-var_2.y)**2)
 
     def get_list_object(self):
         list_pyxel = []
@@ -83,6 +87,7 @@ class Game(object):
             Update function
         """
         list_pyxel = self.get_list_object()
+        self.explosions = []
         dx = dy = 0
 
         # Player's actions
@@ -110,6 +115,23 @@ class Game(object):
                 if abs(self.player.y-enemy.y)>0 and [enemy.x, (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))] not in list_pyxel:
                     enemy.y = (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))
 
+        # Projectiles explosion
+        for projectile in self.projectiles:
+            if [projectile.x, projectile.y] in list_pyxel:
+                self.explosions.append(projectile)
+                self.projectiles.remove(projectile)
+
+            for enemy in self.enemies:
+                if self.get_distance(enemy, projectile)<5:
+                    self.explosions.append(projectile)
+                    self.projectiles.remove(projectile)
+                    self.enemies.remove(enemy)
+
+        # Projectiles out of the screen
+        for projectile in self.projectiles:
+            if 0<projectile.x<255 or 0<projectile.y<255:
+                self.projectiles.remove(projectiles)
+
     def draw(self):
         """
             Drawing function
@@ -127,6 +149,9 @@ class Game(object):
         for projectile in self.projectiles:
             projectile.update_position()
             self.draw_projectile(projectile)
+        # Explosions
+        for explosion in self.explosions:
+            self.draw_explosion(explosion)
         # Health bar
         self.draw_heart()
 

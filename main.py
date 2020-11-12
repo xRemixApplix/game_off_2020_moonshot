@@ -50,6 +50,7 @@ class Game(object):
             Aspect of the enemy
         """
         pyxel.circ(enemy.x, enemy.y, 3, 8)
+        pyxel.text(enemy.x+5, enemy.y, "{}".format(enemy.life), 8)
 
     def draw_heart(self):
         """
@@ -71,7 +72,7 @@ class Game(object):
         pyxel.circ(projectile.x, projectile.y, 1, 7)
 
     def draw_explosion(self, explosion):
-        pyxel.circ(explosion.x, explosion.y, 6, 14)
+        pyxel.circ(explosion.x, explosion.y, 5, 14)
 
     def get_distance(self, var_1, var_2):
         return sqrt(abs(var_1.x-var_2.x)**2+abs(var_1.y-var_2.y)**2)
@@ -85,8 +86,7 @@ class Game(object):
     def get_list_enemies(self, enemy_target):
         enemies_pyxel = []
         for enemy in self.enemies:
-            if enemy!=enemy_target:
-                enemies_pyxel += enemy.get_list_pyxels()
+            if enemy!=enemy_target: enemies_pyxel += enemy.get_list_pyxels()
 
         return enemies_pyxel
 
@@ -113,30 +113,32 @@ class Game(object):
             dy = 1
 
         if pyxel.btnp(pyxel.KEY_SPACE) and (dx != dy):
-                self.projectiles.append(Projectile(self.player.x, self.player.y, dx, dy))
+            self.projectiles.append(Projectile(self.player.x, self.player.y, dx, dy))
 
         # Enemies movement
         for enemy in self.enemies:
-            if 20<self.get_distance(self.player, enemy)<100:
+            if 4<self.get_distance(self.player, enemy)<100:
                 if abs(self.player.x-enemy.x)>0 and [(enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x))), enemy.y] not in list_pyxel and [(enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x))), enemy.y] not in self.get_list_enemies(enemy):
                     enemy.x = (enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x)))
                 if abs(self.player.y-enemy.y)>0 and [enemy.x, (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))] not in list_pyxel and [enemy.x, (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))] not in self.get_list_enemies(enemy):
                     enemy.y = (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))
 
-        # Projectiles explosion
+        # Projectiles end of run
+        for enemy in self.enemies:
+            for projectile in self.projectiles:
+                if self.get_distance(enemy, projectile)<5:
+                    self.explosions.append(projectile)
+                    self.projectiles.remove(projectile)
+                    enemy.life -= 1
+                    if enemy.life<1:
+                        self.enemies.remove(enemy)
+
         for projectile in self.projectiles:
             if [projectile.x, projectile.y] in list_pyxel:
                 self.explosions.append(projectile)
                 self.projectiles.remove(projectile)
 
-            for enemy in self.enemies:
-                if self.get_distance(enemy, projectile)<5:
-                    self.explosions.append(projectile)
-                    self.projectiles.remove(projectile)
-                    self.enemies.remove(enemy)
-
-        # Projectiles out of the screen
-        for projectile in self.projectiles:
+             # Projectiles out of the screen
             if 0>projectile.x>255 or 0>projectile.y>255:
                 self.projectiles.remove(projectile)
 

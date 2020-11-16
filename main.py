@@ -3,7 +3,7 @@
 """
 
 from random import randint
-from math import ceil, sqrt
+from math import ceil, sqrt, pi
 
 import pyxel
 
@@ -17,8 +17,9 @@ class Game(object):
         Game's general class
     """
     def __init__(self):
-        pyxel.init(255, 255, caption="MOONSHOT", quit_key=pyxel.KEY_Q, fps=20)
+        pyxel.init(255, 255, caption="MOONSHOT", quit_key=pyxel.KEY_ESCAPE, fps=20)
         pyxel.image(0).load(0, 0, "assets/object.png")
+        pyxel.mouse(True)
 
         # Object generation with random position
         self.list_object = []
@@ -49,8 +50,8 @@ class Game(object):
         """
             Aspect of the enemy
         """
-        pyxel.circ(enemy.x, enemy.y, 3, 8)
-        pyxel.text(enemy.x+5, enemy.y, "{}".format(enemy.life), 8)
+        pyxel.blt(enemy.x-8, enemy.y-8, 0, 0, 104, 8, 8, 13)
+        pyxel.text(enemy.x+8, enemy.y-8, "{}".format(enemy.life), 8)
 
     def draw_heart(self):
         """
@@ -99,21 +100,19 @@ class Game(object):
         dx = dy = 0
 
         # Player's actions
-        if pyxel.btn(pyxel.KEY_K) and [self.player.x-1, self.player.y] not in list_pyxel and self.player.x > 0:
+        if pyxel.btn(pyxel.KEY_Q) and [self.player.x-1, self.player.y] not in list_pyxel and self.player.x > 0:
             self.player.x = (self.player.x - 1)
-            dx = -1
-        if pyxel.btn(pyxel.KEY_O) and [self.player.x, self.player.y-1] not in list_pyxel and self.player.y > 0:
+        if pyxel.btn(pyxel.KEY_Z) and [self.player.x, self.player.y-1] not in list_pyxel and self.player.y > 0:
             self.player.y = (self.player.y - 1)
-            dy = -1
-        if pyxel.btn(pyxel.KEY_M) and [self.player.x+1, self.player.y] not in list_pyxel and self.player.x < 255:
+        if pyxel.btn(pyxel.KEY_D) and [self.player.x+1, self.player.y] not in list_pyxel and self.player.x < 255:
             self.player.x = (self.player.x + 1)
-            dx = 1
-        if pyxel.btn(pyxel.KEY_L) and [self.player.x, self.player.y+1] not in list_pyxel and self.player.y < 255:
+        if pyxel.btn(pyxel.KEY_S) and [self.player.x, self.player.y+1] not in list_pyxel and self.player.y < 255:
             self.player.y = (self.player.y + 1)
-            dy = 1
 
-        if pyxel.btnp(pyxel.KEY_SPACE) and (dx != dy):
-            self.projectiles.append(Projectile(self.player.x, self.player.y, dx, dy))
+        if pyxel.btnp(pyxel.MOUSE_LEFT_BUTTON):
+            dx = abs(self.player.x-pyxel.mouse_x)/sqrt((self.player.x-pyxel.mouse_x)**2+(self.player.y-pyxel.mouse_y)**2)
+            dy = abs(self.player.y-pyxel.mouse_y)/sqrt((self.player.x-pyxel.mouse_x)**2+(self.player.y-pyxel.mouse_y)**2)
+            self.projectiles.append(Projectile(self.player.x, self.player.y, dx if self.player.x<pyxel.mouse_x else -dx, dy if self.player.y<pyxel.mouse_y else -dy))
 
         # Enemies movement
         for enemy in self.enemies:

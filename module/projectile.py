@@ -6,11 +6,13 @@ class Projectile(object):
     """
         Projectile class
     """
-    def __init__(self, x, y, dx, dy):
+    def __init__(self, x, y, dx, dy, scope):
         self.__x = x
         self.__y = y
         self.__dx = dx
         self.__dy = dy
+        self.__scope = scope
+        self.__distance = 0
 
     @property
     def x(self):
@@ -40,6 +42,21 @@ class Projectile(object):
     def dy(self, value):
         self.__dy = value
 
+    @property
+    def scope(self):
+        return self.__scope
+    @scope.setter
+    def scope(self, value):
+        self.__scope = value
+
+    @property
+    def distance(self):
+        return self.__distance
+    @distance.setter
+    def distance(self, value):
+        self.__distance = value
+
     def update_position(self):
         self.x += self.dx + self.dx
         self.y += self.dy + self.dy
+        self.distance += 1

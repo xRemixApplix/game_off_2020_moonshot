@@ -112,7 +112,7 @@ class Game(object):
         if pyxel.btnp(pyxel.MOUSE_LEFT_BUTTON):
             dx = abs(self.player.x-pyxel.mouse_x)/sqrt((self.player.x-pyxel.mouse_x)**2+(self.player.y-pyxel.mouse_y)**2)
             dy = abs(self.player.y-pyxel.mouse_y)/sqrt((self.player.x-pyxel.mouse_x)**2+(self.player.y-pyxel.mouse_y)**2)
-            self.projectiles.append(Projectile(self.player.x, self.player.y, dx if self.player.x<pyxel.mouse_x else -dx, dy if self.player.y<pyxel.mouse_y else -dy))
+            self.projectiles.append(Projectile(self.player.x, self.player.y, dx if self.player.x<pyxel.mouse_x else -dx, dy if self.player.y<pyxel.mouse_y else -dy, 50))
 
         # Enemies movement
         for enemy in self.enemies:
@@ -125,15 +125,17 @@ class Game(object):
         # Projectiles end of run
         for enemy in self.enemies:
             for projectile in self.projectiles:
-                if self.get_distance(enemy, projectile)<5:
+                if self.get_distance(enemy, projectile)<6:
                     self.explosions.append(projectile)
                     self.projectiles.remove(projectile)
                     enemy.life -= 1
                     if enemy.life<1:
                         self.enemies.remove(enemy)
+                if projectile.distance>=projectile.scope:
+                    self.projectiles.remove(projectile)
 
         for projectile in self.projectiles:
-            if [projectile.x, projectile.y] in list_pyxel:
+            if [int(projectile.x), int(projectile.y)] in list_pyxel:
                 self.explosions.append(projectile)
                 self.projectiles.remove(projectile)
 

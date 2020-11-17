@@ -7,7 +7,7 @@ from math import ceil, sqrt, pi
 
 import pyxel
 
-from module.object import Moyen_Roc, Grand_Roc, Petit_Roc
+from module.object import Moyen_Roc, Grand_Roc, Petit_Roc, Orb
 from module.character import Enemy, Player
 from module.projectile import Projectile
 
@@ -38,7 +38,7 @@ class Game(object):
         self.projectiles = []
         self.explosions = []
         # Orb
-        self.orb_coord = []
+        self.orb = []
 
         pyxel.run(self.update, self.draw)
 
@@ -55,8 +55,8 @@ class Game(object):
         pyxel.blt(enemy.x-8, enemy.y-8, 0, 0, 104, 8, 8, 13)
         pyxel.text(enemy.x+8, enemy.y-8, "{}".format(enemy.life), 8)
 
-    def draw_orb(self, x, y):
-        pyxel.blt(x, y, 0, 64, 16, 8, 8, 13)
+    def draw_orb(self, orb):
+        pyxel.blt(orb.x, orb.y, 0, orb.u, orb.v, orb.w, orb.h, 13)
 
     def draw_heart(self):
         """
@@ -135,9 +135,8 @@ class Game(object):
                     self.projectiles.remove(projectile)
                     enemy.life -= 1
                     if enemy.life<1:
-                        if not self.player.orb_find and randint(1, 50) in range(5) and len(self.orb_coord)==0: 
-                            self.orb_coord.append(enemy.x) 
-                            self.orb_coord.append(enemy.y)
+                        if not self.player.orb_find and randint(1, 50) in range(5) and len(self.orb)==0:
+                            self.orb.append(Orb(enemy.x, enemy.y, 64, 16, 8, 8))
                             self.player.orb_find = True
                         self.enemies.remove(enemy)
                 if projectile.distance>=projectile.scope:
@@ -151,6 +150,11 @@ class Game(object):
              # Projectiles out of the screen
             if 0>projectile.x>255 or 0>projectile.y>255:
                 self.projectiles.remove(projectile)
+
+        if len(self.orb)>0 and [self.player.x, self.player.y] in self.orb[0].list_pyxels:
+            self.orb = []
+            self.player.orb_find = True
+            print("Orbe trouvée")
 
         if len(self.enemies)<1:
             while len(self.enemies) < 5:
@@ -177,8 +181,8 @@ class Game(object):
         for explosion in self.explosions:
             self.draw_explosion(explosion)
         # Orbs
-        if len(self.orb_coord)>0:
-            self.draw_orb(self.orb_coord[0], self.orb_coord[1])
+        if len(self.orb)>0:
+            self.draw_orb(self.orb[0])
         # Health bar
         self.draw_heart()
 

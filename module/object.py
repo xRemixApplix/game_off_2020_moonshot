@@ -128,3 +128,22 @@ class Petit_Roc(Object):
         for i in range(4, 6): tab_pyxels.append([x+12, y+i])
 
         return tab_pyxels
+
+class Orb(Object):
+    def __init__(self, x, y, u, v, w, h):
+        super().__init__(x, y, u, v, w, h)
+        self.list_pyxels = self.fill_list_pixels(x, y)
+
+    def fill_list_pixels(self, x, y):
+        tab_pyxels = []
+
+        for i in range(2, 6): tab_pyxels.append([x, y+i])
+        for i in range(1, 7): tab_pyxels.append([x+1, y+i])
+        for i in range(8): tab_pyxels.append([x+2, y+i])
+        for i in range(8): tab_pyxels.append([x+3, y+i])
+        for i in range(8): tab_pyxels.append([x+4, y+i])
+        for i in range(8): tab_pyxels.append([x+5, y+i])
+        for i in range(1, 7): tab_pyxels.append([x+6, y+i])
+        for i in range(2, 6): tab_pyxels.append([x+7, y+i])
+
+        return tab_pyxels

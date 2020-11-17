@@ -37,6 +37,8 @@ class Game(object):
         # Projectiles
         self.projectiles = []
         self.explosions = []
+        # Orb
+        self.orb_coord = []
 
         pyxel.run(self.update, self.draw)
 
@@ -52,6 +54,9 @@ class Game(object):
         """
         pyxel.blt(enemy.x-8, enemy.y-8, 0, 0, 104, 8, 8, 13)
         pyxel.text(enemy.x+8, enemy.y-8, "{}".format(enemy.life), 8)
+
+    def draw_orb(self, x, y):
+        pyxel.blt(x, y, 0, 64, 16, 8, 8, 13)
 
     def draw_heart(self):
         """
@@ -130,6 +135,10 @@ class Game(object):
                     self.projectiles.remove(projectile)
                     enemy.life -= 1
                     if enemy.life<1:
+                        if not self.player.orb_find and randint(1, 50) in range(5) and len(self.orb_coord)==0: 
+                            self.orb_coord.append(enemy.x) 
+                            self.orb_coord.append(enemy.y)
+                            self.player.orb_find = True
                         self.enemies.remove(enemy)
                 if projectile.distance>=projectile.scope:
                     self.projectiles.remove(projectile)
@@ -142,6 +151,10 @@ class Game(object):
              # Projectiles out of the screen
             if 0>projectile.x>255 or 0>projectile.y>255:
                 self.projectiles.remove(projectile)
+
+        if len(self.enemies)<1:
+            while len(self.enemies) < 5:
+                self.enemies.append(Enemy(randint(0, 255), randint(0, 255), 10))
 
     def draw(self):
         """
@@ -163,6 +176,9 @@ class Game(object):
         # Explosions
         for explosion in self.explosions:
             self.draw_explosion(explosion)
+        # Orbs
+        if len(self.orb_coord)>0:
+            self.draw_orb(self.orb_coord[0], self.orb_coord[1])
         # Health bar
         self.draw_heart()
 

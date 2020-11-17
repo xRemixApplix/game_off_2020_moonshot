@@ -47,6 +47,14 @@ class Player(Character):
     """
     def __init__(self, x, y, life):
         super().__init__(x, y, life)
+        self.__orb_find = False
+
+    @property
+    def orb_find(self):
+        return self.__orb_find
+    @orb_find.setter
+    def orb_find(self, value):
+        self.__orb_find = value
 
 
 class Enemy(Character):

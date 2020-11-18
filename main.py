@@ -66,13 +66,13 @@ class Game(object):
         for i in range(nb_heart):
             # Heart full
             if self.player.life >= (i+1)*3:
-                pyxel.blt(1+(9*i), 1, 0, 24, 16, 8, 8, 13)
+                pyxel.blt(1+(17*i), 1, 0, 152, 16, 16, 16, 13)
             # Heart empty
             elif abs(self.player.life-((i+1)*3)) > 3:
-                pyxel.blt(1+(9*i), 1, 0, 48, 16, 8, 8, 13)
+                pyxel.blt(1+(17*i), 1, 0, 200, 16, 16, 16, 13)
             # Heart mid
             else:
-                pyxel.blt(1+(9*i), 1, 0, 48-(8*(3-abs(self.player.life-((i+1)*3)))), 16, 8, 8, 13)
+                pyxel.blt(1+(17*i), 1, 0, 184-(16*(3-abs(self.player.life-((i+1)*3)))), 16, 16, 16, 13)
 
     def draw_projectile(self, projectile):
         pyxel.circ(projectile.x, projectile.y, 1, 7)
@@ -151,10 +151,10 @@ class Game(object):
             if 0>projectile.x>255 or 0>projectile.y>255:
                 self.projectiles.remove(projectile)
 
-        if len(self.orb)>0 and [self.player.x, self.player.y] in self.orb[0].list_pyxels and not self.player.orb_find:
+        if len(self.orb)>0 and [self.player.x, self.player.y] in self.orb[0].list_pyxels:
             self.orb = []
             self.player.orb_find = True
-            self.orb.append(Orb(243, 1, 64, 16, 8, 8))
+            self.orb.append(Orb(235, 1, 168, 0, 16, 16))
 
         if len(self.enemies)<1:
             while len(self.enemies) < 5:
@@ -182,12 +182,12 @@ class Game(object):
             self.draw_explosion(explosion)
         # Orbs
         pyxel.line(251, 1, 253, 1, 7)
-        pyxel.line(253, 1, 253, 9, 7)
-        pyxel.line(251, 9, 253, 9, 7)
+        pyxel.line(253, 1, 253, 17, 7)
+        pyxel.line(251, 17, 253, 17, 7)
 
-        pyxel.line(241, 1, 243, 1, 7)
-        pyxel.line(241, 1, 241, 9, 7)
-        pyxel.line(241, 9, 243, 9, 7)
+        pyxel.line(233, 1, 235, 1, 7)
+        pyxel.line(233, 1, 233, 17, 7)
+        pyxel.line(233, 17, 235, 17, 7)
         if len(self.orb)>0:
             self.draw_orb(self.orb[0])
         # Health bar

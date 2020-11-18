@@ -67,12 +67,19 @@ class Enemy(Character):
     def get_list_pyxels(self):
         tab_pyxels = []
 
-        for i in range(-1, 2): tab_pyxels.append([self.x-3, self.y+i])
-        for i in range(-2, 3): tab_pyxels.append([self.x-2, self.y+i])
-        for i in range(-3, 4): tab_pyxels.append([self.x-1, self.y+i])
-        for i in range(-3, 4): tab_pyxels.append([self.x, self.y+i])
-        for i in range(-3, 4): tab_pyxels.append([self.x+1, self.y+i])
-        for i in range(-2, 3): tab_pyxels.append([self.x+2, self.y+i])
-        for i in range(-1, 2): tab_pyxels.append([self.x+3, self.y+i])
+        for i in range(-2, 0): tab_pyxels.append([self.x-7, self.y+i])
+        for i in range(-2, 2): tab_pyxels.append([self.x-6, self.y+i])
+        for i in range(-2, 4): tab_pyxels.append([self.x-5, self.y+i])
+        for i in range(-2, 3): tab_pyxels.append([self.x-4, self.y+i])
+        for i in range(-3, 3): tab_pyxels.append([self.x-3, self.y+i])
+        for i in range(-4, 4): tab_pyxels.append([self.x-2, self.y+i])
+        for i in range(-4, 5): tab_pyxels.append([self.x-1, self.y+i])
+        for i in range(-4, 5): tab_pyxels.append([self.x, self.y+i])
+        for i in range(-4, 4): tab_pyxels.append([self.x+1, self.y+i])
+        for i in range(-3, 3): tab_pyxels.append([self.x+2, self.y+i])
+        for i in range(-2, 3): tab_pyxels.append([self.x+3, self.y+i])
+        for i in range(-2, 4): tab_pyxels.append([self.x+4, self.y+i])
+        for i in range(-2, 2): tab_pyxels.append([self.x+5, self.y+i])
+        for i in range(-2, 0): tab_pyxels.append([self.x+6, self.y+i])
 
         return tab_pyxels

@@ -19,7 +19,6 @@ class Game(object):
     def __init__(self):
         pyxel.init(255, 255, caption="MOONSHOT", quit_key=pyxel.KEY_ESCAPE, fps=20)
         pyxel.image(0).load(0, 0, "assets/object.png")
-        pyxel.mouse(True)
 
         # Object generation with random position
         self.list_object = []
@@ -33,7 +32,7 @@ class Game(object):
         # Player
         self.player = Player(randint(0, 255), randint(0, 255), 10)
         # Enemies
-        self.enemies = [Enemy(randint(0, 255), randint(0, 255), 10) for _ in range(5)]
+        self.enemies = []
         # Projectiles
         self.projectiles = []
         self.explosions = []
@@ -52,11 +51,14 @@ class Game(object):
         """
             Aspect of the enemy
         """
-        pyxel.blt(enemy.x-8, enemy.y-8, 0, 0, 104, 8, 8, 13)
+        pyxel.blt(enemy.x-8, enemy.y-8, 0, 0, 105, 16, 15, 13)
         pyxel.text(enemy.x+8, enemy.y-8, "{}".format(enemy.life), 8)
 
     def draw_orb(self, orb):
         pyxel.blt(orb.x, orb.y, 0, orb.u, orb.v, orb.w, orb.h, 13)
+
+    def draw_target(self, x, y):
+        pyxel.blt(x-4, y-4, 0, 0, 96, 9, 9, 13)
 
     def draw_heart(self):
         """
@@ -89,7 +91,13 @@ class Game(object):
 
         return list_pyxel
 
-    def get_list_enemies(self, enemy_target):
+    def get_list_enemy(self):
+        list_pyxel = []
+        for enemy in self.enemies: list_pyxel += enemy.get_list_pyxels()
+
+        return list_pyxel
+
+    def get_versus_list_enemies(self, enemy_target):
         enemies_pyxel = []
         for enemy in self.enemies:
             if enemy!=enemy_target: enemies_pyxel += enemy.get_list_pyxels()
@@ -101,6 +109,7 @@ class Game(object):
             Update function
         """
         list_pyxel = self.get_list_object()
+        list_pyxel_enemies = self.get_list_enemy()
         self.explosions = []
         dx = dy = 0
 
@@ -114,17 +123,17 @@ class Game(object):
         if pyxel.btn(pyxel.KEY_S) and [self.player.x, self.player.y+1] not in list_pyxel and self.player.y < 255:
             self.player.y = (self.player.y + 1)
 
-        if pyxel.btnp(pyxel.MOUSE_LEFT_BUTTON):
+        if pyxel.btnp(pyxel.MOUSE_LEFT_BUTTON) and [pyxel.mouse_x, pyxel.mouse_y] in list_pyxel_enemies: 
             dx = abs(self.player.x-pyxel.mouse_x)/sqrt((self.player.x-pyxel.mouse_x)**2+(self.player.y-pyxel.mouse_y)**2)
             dy = abs(self.player.y-pyxel.mouse_y)/sqrt((self.player.x-pyxel.mouse_x)**2+(self.player.y-pyxel.mouse_y)**2)
             self.projectiles.append(Projectile(self.player.x, self.player.y, dx if self.player.x<pyxel.mouse_x else -dx, dy if self.player.y<pyxel.mouse_y else -dy, 50))
 
         # Enemies movement
         for enemy in self.enemies:
-            if 4<self.get_distance(self.player, enemy)<100:
-                if abs(self.player.x-enemy.x)>0 and [(enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x))), enemy.y] not in list_pyxel and [(enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x))), enemy.y] not in self.get_list_enemies(enemy):
+            if 10<self.get_distance(self.player, enemy)<100:
+                if abs(self.player.x-enemy.x)>0 and [(enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x))), enemy.y] not in list_pyxel and [(enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x))), enemy.y] not in self.get_versus_list_enemies(enemy):
                     enemy.x = (enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x)))
-                if abs(self.player.y-enemy.y)>0 and [enemy.x, (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))] not in list_pyxel and [enemy.x, (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))] not in self.get_list_enemies(enemy):
+                if abs(self.player.y-enemy.y)>0 and [enemy.x, (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))] not in list_pyxel and [enemy.x, (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))] not in self.get_versus_list_enemies(enemy):
                     enemy.y = (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))
 
         # Projectiles end of run
@@ -165,6 +174,16 @@ class Game(object):
             Drawing function
         """
         pyxel.cls(1)
+        # Orbs
+        pyxel.line(251, 1, 253, 1, 7)
+        pyxel.line(253, 1, 253, 17, 7)
+        pyxel.line(251, 17, 253, 17, 7)
+
+        pyxel.line(233, 1, 235, 1, 7)
+        pyxel.line(233, 1, 233, 17, 7)
+        pyxel.line(233, 17, 235, 17, 7)
+        if len(self.orb)>0:
+            self.draw_orb(self.orb[0])
         # Map
         for obj in self.list_object:
             pyxel.blt(obj.x, obj.y, 0, obj.u, obj.v, obj.w, obj.h, 13)
@@ -180,18 +199,9 @@ class Game(object):
         # Explosions
         for explosion in self.explosions:
             self.draw_explosion(explosion)
-        # Orbs
-        pyxel.line(251, 1, 253, 1, 7)
-        pyxel.line(253, 1, 253, 17, 7)
-        pyxel.line(251, 17, 253, 17, 7)
-
-        pyxel.line(233, 1, 235, 1, 7)
-        pyxel.line(233, 1, 233, 17, 7)
-        pyxel.line(233, 17, 235, 17, 7)
-        if len(self.orb)>0:
-            self.draw_orb(self.orb[0])
         # Health bar
         self.draw_heart()
-
+        # Mouse
+        self.draw_target(pyxel.mouse_x, pyxel.mouse_y)
 # Game loop
 Game()

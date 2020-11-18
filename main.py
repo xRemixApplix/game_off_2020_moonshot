@@ -151,10 +151,10 @@ class Game(object):
             if 0>projectile.x>255 or 0>projectile.y>255:
                 self.projectiles.remove(projectile)
 
-        if len(self.orb)>0 and [self.player.x, self.player.y] in self.orb[0].list_pyxels:
+        if len(self.orb)>0 and [self.player.x, self.player.y] in self.orb[0].list_pyxels and not self.player.orb_find:
             self.orb = []
             self.player.orb_find = True
-            print("Orbe trouvée")
+            self.orb.append(Orb(243, 1, 64, 16, 8, 8))
 
         if len(self.enemies)<1:
             while len(self.enemies) < 5:
@@ -181,6 +181,13 @@ class Game(object):
         for explosion in self.explosions:
             self.draw_explosion(explosion)
         # Orbs
+        pyxel.line(251, 1, 253, 1, 7)
+        pyxel.line(253, 1, 253, 9, 7)
+        pyxel.line(251, 9, 253, 9, 7)
+
+        pyxel.line(241, 1, 243, 1, 7)
+        pyxel.line(241, 1, 241, 9, 7)
+        pyxel.line(241, 9, 243, 9, 7)
         if len(self.orb)>0:
             self.draw_orb(self.orb[0])
         # Health bar

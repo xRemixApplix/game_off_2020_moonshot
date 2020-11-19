@@ -4,6 +4,8 @@
 
 from random import randint
 from math import ceil, sqrt, pi
+import os
+import json
 
 import pyxel
 
@@ -38,6 +40,18 @@ class Game(object):
         self.explosions = []
         # Orb
         self.orb = []
+        
+        if os.path.isfile('resource/statistics.json'):
+            with open('resource/statistics.json', 'r') as stats:
+                json_stats = json.load(stats)
+                self.player.level = int(json_stats["level_player"])
+                self.player.life = self.player.life_max = int(json_stats["life_player"])
+                self.player.attack = int(json_stats["attack_player"])
+                self.player.defense = int(json_stats["defense_player"])
+                self.player.speed = int(json_stats["speed_player"])
+                self.reward = int(json_stats["reward_points"])
+        else:
+            self.reward = 0
 
         pyxel.run(self.update, self.draw)
 
@@ -55,9 +69,15 @@ class Game(object):
         pyxel.text(enemy.x+8, enemy.y-8, "{}".format(enemy.life), 8)
 
     def draw_orb(self, orb):
+        """
+            Aspect of the orb
+        """
         pyxel.blt(orb.x, orb.y, 0, orb.u, orb.v, orb.w, orb.h, 13)
 
     def draw_target(self, x, y):
+        """
+            Aspect of the mouse pointer
+        """
         pyxel.blt(x-4, y-4, 0, 0, 96, 9, 9, 13)
 
     def draw_heart(self):
@@ -74,7 +94,7 @@ class Game(object):
                 pyxel.blt(1+(17*i), 1, 0, 200, 16, 16, 16, 13)
             # Heart mid
             else:
-                pyxel.blt(1+(17*i), 1, 0, 184-(16*(3-abs(self.player.life-((i+1)*3)))), 16, 16, 16, 13)
+                pyxel.blt(1+(17*i), 1, 0, 200-(16*(3-abs(self.player.life-((i+1)*3)))), 16, 16, 16, 13)
 
     def draw_projectile(self, projectile):
         pyxel.circ(projectile.x, projectile.y, 1, 7)

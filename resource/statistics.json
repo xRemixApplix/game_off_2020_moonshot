@@ -1,0 +1,13 @@
+{
+    "level_player": 1,
+    "life_player": 11,
+    "attack_player": 1,
+    "defense_player": 1,
+    "speed_player": 1,
+    "level_enemi": 1,
+    "life_enemi": 10,
+    "attack_enemi": 1,
+    "defense_enemi": 1,
+    "speed_enemi": 1,
+    "reward_points": 0
+}

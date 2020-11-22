@@ -2,7 +2,8 @@
     main.py : Game main file
 """
 
-from random import randint
+from os import stat
+from random import randint, uniform
 from math import sqrt, pi
 import os
 import json
@@ -41,17 +42,22 @@ class Game(object):
         self.orb = []
         
         # Read File informations
+        self.stats = {}
         with open('resource/statistics.json', 'r') as stats:
             json_stats = json.load(stats)
+            self.stats["level_player"] = int(json_stats["level_player"])
+            self.stats["life"] = int(((self.stats["level_player"]/10)+(self.stats["level_player"]/2)+(self.stats["level_player"]*10))*json_stats["bonus_life"])
+            self.stats["bonus_life"] = json_stats["bonus_life"]
+            self.stats["damage"] = int((((self.stats["level_player"]*50)/10)+(self.stats["level_player"]/2)-(self.stats["level_player"]/5))*json_stats["bonus_attack"])
+            self.stats["bonus_attack"] =json_stats["bonus_attack"]
+            self.stats["bonus_defense"] =json_stats["bonus_defense"]
+            self.stats["bonus_range"] =json_stats["bonus_range"]
+            self.stats["experience"] = int(json_stats["experience"])
 
-            level = int(json_stats["level_player"])
-            life = int(((level/10)+(level/2)+(level*10))*json_stats["bonus_life"])
-            damage = int((((level*50)/10)+(level/2)-(level/5))*json_stats["bonus_attack"])
-            reward = int(json_stats["reward_points"])
+        # Player
+        self.player = Player(randint(0, 255), randint(0, 255), self.stats["life"], self.stats["level_player"], self.stats["damage"], self.stats["experience"])
 
-            # Player
-            self.player = Player(randint(0, 255), randint(0, 255), life, level, damage, reward)
-
+        self.in_game = True
         pyxel.run(self.update, self.draw)
 
     def get_distance(self, var_1, var_2):
@@ -98,7 +104,7 @@ class Game(object):
         if pyxel.btnp(pyxel.MOUSE_LEFT_BUTTON) and [pyxel.mouse_x, pyxel.mouse_y] in list_pyxel_enemies: 
             dx = abs(self.player.x-pyxel.mouse_x)/sqrt((self.player.x-pyxel.mouse_x)**2+(self.player.y-pyxel.mouse_y)**2)
             dy = abs(self.player.y-pyxel.mouse_y)/sqrt((self.player.x-pyxel.mouse_x)**2+(self.player.y-pyxel.mouse_y)**2)
-            self.projectiles.append(Projectile(self.player.x, self.player.y, dx if self.player.x<pyxel.mouse_x else -dx, dy if self.player.y<pyxel.mouse_y else -dy, 30, "player"))
+            self.projectiles.append(Projectile(self.player.x, self.player.y, dx if self.player.x<pyxel.mouse_x else -dx, dy if self.player.y<pyxel.mouse_y else -dy, 30, "player", self.player.damage))
 
         # Enemies movement and shoot
         for enemy in self.enemies:
@@ -113,7 +119,7 @@ class Game(object):
             if self.get_distance(self.player, enemy)<50 and randint(1, 50) in range(5):
                 dx = abs(self.player.x-enemy.x)/sqrt((self.player.x-enemy.x)**2+(self.player.y-enemy.y)**2)
                 dy = abs(self.player.y-enemy.y)/sqrt((self.player.x-enemy.x)**2+(self.player.y-enemy.y)**2)
-                self.projectiles.append(Projectile(enemy.x, enemy.y, dx if enemy.x<self.player.x else -dx, dy if enemy.y<self.player.y else -dy, 30, "enemy"))
+                self.projectiles.append(Projectile(enemy.x, enemy.y, dx if enemy.x<self.player.x else -dx, dy if enemy.y<self.player.y else -dy, 30, "enemy", enemy.damage))
         
         # Projectiles end of run
         for enemy in self.enemies:
@@ -121,7 +127,7 @@ class Game(object):
                 if self.get_distance(enemy, projectile)<6 and projectile.owner=="player":
                     self.explosions.append(projectile)
                     self.projectiles.remove(projectile)
-                    enemy.life -= self.player.damage
+                    enemy.life -= projectile.damage
                     if enemy.life<=0:
                         if not self.player.orb_find and randint(1, 50) in range(5) and len(self.orb)==0:
                             self.orb.append(Orb(enemy.x, enemy.y, 64, 16, 8, 8))
@@ -130,6 +136,12 @@ class Game(object):
                 
                 # Max range disappear
                 if projectile.max_range(): self.projectiles.remove(projectile)
+
+        for projectile in self.projectiles:
+            if self.get_distance(self.player, projectile)<4 and projectile.owner=="enemy":
+                self.explosions.append(projectile)
+                self.projectiles.remove(projectile)
+                self.player.life -= projectile.damage
 
         for projectile in self.projectiles:
             if [int(projectile.x), int(projectile.y)] in list_pyxel:
@@ -145,46 +157,60 @@ class Game(object):
             self.player.orb_find = True
             self.orb.append(Orb(235, 1, 168, 0, 16, 16))
 
+        # Enemies generation
         if len(self.enemies)<1:
-            enemy_life = int(((self.enemies_level/10)+(self.enemies_level/2)+(self.enemies_level*10)))
-            enemy_damage = int((((self.enemies_level*50)/10)+(self.enemies_level/2)-(self.enemies_level/5)))
+            enemy_life = int(((self.enemies_level/10)+(self.enemies_level/2)+(self.enemies_level*10))*uniform(0.8, 1.2))
+            enemy_damage = int((((self.enemies_level*50)/10)+(self.enemies_level/2)-(self.enemies_level/5))*uniform(0.8, 1.2))
             while len(self.enemies) < 5: self.enemies.append(Enemy(randint(0, 255), randint(0, 255), enemy_life, self.enemies_level, enemy_damage))
+
+        # End game detection
+        if self.player.life <= 0 and self.in_game:
+            self.in_game = False
+            # Write infos in file statistics.json
+            with open('resource/statistics.json', 'w') as stats_file:
+                json.dump(self.stats, stats_file)
+
 
     def draw(self):
         """
             Drawing function
         """
         pyxel.cls(1)
-        # Map
-        for obj in self.list_object: draw_object(obj.x, obj.y, obj.u, obj.v, obj.w, obj.h)
 
-        # Player
-        draw_player(self.player.x, self.player.y)
+        if self.in_game:
+            # Map
+            for obj in self.list_object: draw_object(obj.x, obj.y, obj.u, obj.v, obj.w, obj.h)
 
-        # Enemies
-        for enemy in self.enemies: draw_enemy(enemy.x, enemy.y, enemy.life)
+            # Player
+            draw_player(self.player.x, self.player.y)
 
-        # Projectiles
-        for projectile in self.projectiles:
-            projectile.update_position()
-            draw_projectile(projectile.x, projectile.y)
+            # Enemies
+            for enemy in self.enemies: draw_enemy(enemy.x, enemy.y, enemy.life)
 
-        # Explosions
-        for explosion in self.explosions: draw_explosion(explosion.x, explosion.y)
+            # Projectiles
+            for projectile in self.projectiles:
+                projectile.update_position()
+                draw_projectile(projectile.x, projectile.y)
 
-        # Health bar
-        draw_heart(self.player.life_max, self.player.life)
+            # Explosions
+            for explosion in self.explosions: draw_explosion(explosion.x, explosion.y)
 
-        # Orbs
-        pyxel.line(251, 1, 253, 1, 7)
-        pyxel.line(253, 1, 253, 17, 7)
-        pyxel.line(251, 17, 253, 17, 7)
+            # Health bar
+            draw_heart(self.player.life_max, self.player.life)
 
-        pyxel.line(233, 1, 235, 1, 7)
-        pyxel.line(233, 1, 233, 17, 7)
-        pyxel.line(233, 17, 235, 17, 7)
-        if len(self.orb)>0: draw_orb(self.orb[0].x, self.orb[0].y, self.orb[0].u, self.orb[0].v, self.orb[0].w, self.orb[0].h)
-            
+            # Orbs
+            pyxel.line(251, 1, 253, 1, 7)
+            pyxel.line(253, 1, 253, 17, 7)
+            pyxel.line(251, 17, 253, 17, 7)
+
+            pyxel.line(233, 1, 235, 1, 7)
+            pyxel.line(233, 1, 233, 17, 7)
+            pyxel.line(233, 17, 235, 17, 7)
+            if len(self.orb)>0: draw_orb(self.orb[0].x, self.orb[0].y, self.orb[0].u, self.orb[0].v, self.orb[0].w, self.orb[0].h)
+        
+        else:
+            pyxel.text(110, 122, "GAME OVER", pyxel.frame_count % 16)
+
         # Mouse
         draw_target(pyxel.mouse_x, pyxel.mouse_y)
 

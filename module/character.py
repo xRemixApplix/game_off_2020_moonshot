@@ -6,15 +6,13 @@ class Character(object):
     """
         Character class
     """
-    def __init__(self, x, y, life):
+    def __init__(self, x, y, life, level, damage):
         self.__x = x
         self.__y = y
         self.__life = life
         self.__life_max = life
-        self.__level = 0;
-        self.__attack = 1;
-        self.__defense = 1;
-        self._speed = 1;
+        self.__level = level;
+        self.__damage = damage;
 
     @property
     def x(self):
@@ -45,25 +43,11 @@ class Character(object):
         self.__life_max = value
 
     @property
-    def attack(self):
-        return self.__attack
-    @attack.setter
-    def attack(self, value):
-        self.__attack = value
-
-    @property
-    def defense(self):
-        return self.__defense
-    @defense.setter
-    def defense(self, value):
-        self.__defense = value
-
-    @property
-    def speed(self):
-        return self.__speed
-    @speed.setter
-    def speed(self, value):
-        self.__speed = value
+    def damage(self):
+        return self.__damage
+    @damage.setter
+    def damage(self, value):
+        self.__damage = value
 
     @property
     def level(self):
@@ -77,10 +61,10 @@ class Player(Character):
     """
         Player class
     """
-    def __init__(self, x, y, life):
-        super().__init__(x, y, life)
+    def __init__(self, x, y, life, level, damage, reward):
+        super().__init__(x, y, life, level, damage)
         self.__orb_find = False
-        self.__reward = 0
+        self.__reward = reward
 
     @property
     def orb_find(self):
@@ -101,8 +85,8 @@ class Enemy(Character):
     """
         Enemy class
     """
-    def __init__(self, x, y, life):
-        super().__init__(x, y, life)
+    def __init__(self, x, y, life, level, damage):
+        super().__init__(x, y, life, level, damage)
 
     def get_list_pyxels(self):
         tab_pyxels = []

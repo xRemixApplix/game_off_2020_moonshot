@@ -60,3 +60,6 @@ class Projectile(object):
         self.x += self.dx + self.dx
         self.y += self.dy + self.dy
         self.distance += 1
+
+    def max_range(self):
+        return self.scope<=self.distance

@@ -31,6 +31,7 @@ class Game(object):
 
         # Enemies
         self.enemies = []
+        self.enemies_level = 1
 
         # Projectiles
         self.projectiles = []
@@ -97,23 +98,30 @@ class Game(object):
         if pyxel.btnp(pyxel.MOUSE_LEFT_BUTTON) and [pyxel.mouse_x, pyxel.mouse_y] in list_pyxel_enemies: 
             dx = abs(self.player.x-pyxel.mouse_x)/sqrt((self.player.x-pyxel.mouse_x)**2+(self.player.y-pyxel.mouse_y)**2)
             dy = abs(self.player.y-pyxel.mouse_y)/sqrt((self.player.x-pyxel.mouse_x)**2+(self.player.y-pyxel.mouse_y)**2)
-            self.projectiles.append(Projectile(self.player.x, self.player.y, dx if self.player.x<pyxel.mouse_x else -dx, dy if self.player.y<pyxel.mouse_y else -dy, 30))
+            self.projectiles.append(Projectile(self.player.x, self.player.y, dx if self.player.x<pyxel.mouse_x else -dx, dy if self.player.y<pyxel.mouse_y else -dy, 30, "player"))
 
-        # Enemies movement
+        # Enemies movement and shoot
         for enemy in self.enemies:
-            if 15<self.get_distance(self.player, enemy)<100:
+            # Movement
+            if 30<self.get_distance(self.player, enemy)<100:
                 if abs(self.player.x-enemy.x)>0 and [(enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x))), enemy.y] not in list_pyxel and [(enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x))), enemy.y] not in self.get_versus_list_enemies(enemy):
                     enemy.x = (enemy.x + ((self.player.x-enemy.x)//abs(self.player.x-enemy.x)))
                 if abs(self.player.y-enemy.y)>0 and [enemy.x, (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))] not in list_pyxel and [enemy.x, (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))] not in self.get_versus_list_enemies(enemy):
                     enemy.y = (enemy.y + ((self.player.y-enemy.y)//abs(self.player.y-enemy.y)))
 
+            # Shoot
+            if self.get_distance(self.player, enemy)<50 and randint(1, 50) in range(5):
+                dx = abs(self.player.x-enemy.x)/sqrt((self.player.x-enemy.x)**2+(self.player.y-enemy.y)**2)
+                dy = abs(self.player.y-enemy.y)/sqrt((self.player.x-enemy.x)**2+(self.player.y-enemy.y)**2)
+                self.projectiles.append(Projectile(enemy.x, enemy.y, dx if enemy.x<self.player.x else -dx, dy if enemy.y<self.player.y else -dy, 30, "enemy"))
+        
         # Projectiles end of run
         for enemy in self.enemies:
             for projectile in self.projectiles:
-                if self.get_distance(enemy, projectile)<6:
+                if self.get_distance(enemy, projectile)<6 and projectile.owner=="player":
                     self.explosions.append(projectile)
                     self.projectiles.remove(projectile)
-                    enemy.life -= 1
+                    enemy.life -= self.player.damage
                     if enemy.life<=0:
                         if not self.player.orb_find and randint(1, 50) in range(5) and len(self.orb)==0:
                             self.orb.append(Orb(enemy.x, enemy.y, 64, 16, 8, 8))
@@ -138,7 +146,9 @@ class Game(object):
             self.orb.append(Orb(235, 1, 168, 0, 16, 16))
 
         if len(self.enemies)<1:
-            while len(self.enemies) < 5: self.enemies.append(Enemy(randint(0, 255), randint(0, 255), 10, 1, 5))
+            enemy_life = int(((self.enemies_level/10)+(self.enemies_level/2)+(self.enemies_level*10)))
+            enemy_damage = int((((self.enemies_level*50)/10)+(self.enemies_level/2)-(self.enemies_level/5)))
+            while len(self.enemies) < 5: self.enemies.append(Enemy(randint(0, 255), randint(0, 255), enemy_life, self.enemies_level, enemy_damage))
 
     def draw(self):
         """

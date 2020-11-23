@@ -85,10 +85,20 @@ class Grand_Roc(Object):
 class Teleport(Object):
     def __init__(self, x, y):
         super().__init__(x, y, 40, 0, 16, 16)
+        self.list_pyxels = self.fill_list_pixels(x, y)
 
     def activated(self):
         self.u = 0
         self.v = 16
+
+    def fill_list_pixels(self, x, y):
+        tab_pyxels = []
+
+        for i in range(0, 16):
+            for j in range(0, 16):
+                tab_pyxels.append([x+i, y+j])
+
+        return tab_pyxels
 
 class Moyen_Roc(Object):
     def __init__(self, x, y, u, v, w, h):

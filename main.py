@@ -85,6 +85,29 @@ class Game(object):
 
         return enemies_pyxel
 
+    def level_up_enemies(self):
+        # Objects generation with random position
+        self.list_object = []
+        for _ in range(0, 20): self.list_object.append(Petit_Roc(randint(0, 255), randint(0, 255), 72, 16, 16, 8))
+        for _ in range(0, 10): self.list_object.append(Moyen_Roc(randint(0, 255), randint(0, 255), 72, 24, 16, 8))
+        for _ in range(0, 5): self.list_object.append(Grand_Roc(randint(0, 255), randint(0, 255), 0, 0, 16, 16))
+
+        # Enemies
+        self.enemies = []
+        self.enemies_level += 1
+
+        # Projectiles
+        self.projectiles = []
+        self.explosions = []
+
+        # Orb
+        self.orb = []
+
+        # Teleport
+        self.teleport = Teleport(randint(0, 255), randint(0, 255))
+
+        self.player.orb_find = False
+
     def update(self):
         """
             Update function
@@ -159,6 +182,9 @@ class Game(object):
             self.player.orb_find = True
             self.teleport.activated()
             self.orb.append(Orb(235, 1, 168, 0, 16, 16))
+
+        if [self.player.x, self.player.y] in self.teleport.list_pyxels and self.player.orb_find:
+            self.level_up_enemies()
 
         # Enemies generation
         if len(self.enemies)<1:

@@ -56,11 +56,14 @@ def draw_player(x, y):
     pyxel.circ(x, y, 3, 10)
 
 
-def draw_projectile(x, y):
+def draw_projectile(x, y, owner):
     """
         Aspect of the projectile
     """
-    pyxel.circ(x, y, 1, 7)
+    if owner=="player":
+        pyxel.circ(x, y, 1, 7)
+    else:
+        pyxel.circ(x, y, 1, 11)
 
 
 def draw_target(x, y):
@@ -68,3 +71,7 @@ def draw_target(x, y):
         Aspect of the mouse pointer
     """
     pyxel.blt(x-4, y-4, 0, 0, 96, 9, 9, 13)
+
+
+def draw_teleport(x, y, u, v, w, h):
+    pyxel.blt(x, y, 0, u, v, w, h, 13)

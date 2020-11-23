@@ -82,6 +82,14 @@ class Grand_Roc(Object):
 
         return tab_pyxels
 
+class Teleport(Object):
+    def __init__(self, x, y):
+        super().__init__(x, y, 40, 0, 16, 16)
+
+    def activated(self):
+        self.u = 0
+        self.v = 16
+
 class Moyen_Roc(Object):
     def __init__(self, x, y, u, v, w, h):
         super().__init__(x, y, u, v, w, h)

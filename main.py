@@ -10,10 +10,10 @@ import json
 
 import pyxel
 
-from module.object import Moyen_Roc, Grand_Roc, Petit_Roc, Orb
+from module.object import Moyen_Roc, Grand_Roc, Petit_Roc, Orb, Teleport
 from module.character import Enemy, Player
 from module.projectile import Projectile
-from module.drawing import draw_player, draw_enemy, draw_orb, draw_target, draw_heart, draw_projectile, draw_explosion, draw_object
+from module.drawing import draw_player, draw_enemy, draw_orb, draw_target, draw_heart, draw_projectile, draw_explosion, draw_object, draw_teleport
 
 # Main class
 class Game(object):
@@ -40,6 +40,9 @@ class Game(object):
 
         # Orb
         self.orb = []
+
+        # Teleport
+        self.teleport = Teleport(randint(0, 255), randint(0, 255))
         
         # Read File informations
         self.stats = {}
@@ -131,7 +134,6 @@ class Game(object):
                     if enemy.life<=0:
                         if not self.player.orb_find and randint(1, 50) in range(5) and len(self.orb)==0:
                             self.orb.append(Orb(enemy.x, enemy.y, 64, 16, 8, 8))
-                            self.player.orb_find = True
                         self.enemies.remove(enemy)
                 
                 # Max range disappear
@@ -155,20 +157,22 @@ class Game(object):
         if len(self.orb)>0 and [self.player.x, self.player.y] in self.orb[0].list_pyxels:
             self.orb = []
             self.player.orb_find = True
+            self.teleport.activated()
             self.orb.append(Orb(235, 1, 168, 0, 16, 16))
 
         # Enemies generation
         if len(self.enemies)<1:
-            enemy_life = int(((self.enemies_level/10)+(self.enemies_level/2)+(self.enemies_level*10))*uniform(0.8, 1.2))
-            enemy_damage = int((((self.enemies_level*50)/10)+(self.enemies_level/2)-(self.enemies_level/5))*uniform(0.8, 1.2))
-            while len(self.enemies) < 5: self.enemies.append(Enemy(randint(0, 255), randint(0, 255), enemy_life, self.enemies_level, enemy_damage))
+            while len(self.enemies) < 5:
+                enemy_life = int(((self.enemies_level/10)+(self.enemies_level/2)+(self.enemies_level*10))*uniform(0.8, 1.2))
+                enemy_damage = int((((self.enemies_level*50)/10)+(self.enemies_level/2)-(self.enemies_level/5))*uniform(0.8, 1.2))
+                self.enemies.append(Enemy(randint(0, 255), randint(0, 255), enemy_life, self.enemies_level, enemy_damage))
 
         # End game detection
         if self.player.life <= 0 and self.in_game:
             self.in_game = False
             # Write infos in file statistics.json
             with open('resource/statistics.json', 'w') as stats_file:
-                json.dump(self.stats, stats_file)
+                json.dump(self.stats, stats_file, indent=4)
 
 
     def draw(self):
@@ -178,6 +182,9 @@ class Game(object):
         pyxel.cls(1)
 
         if self.in_game:
+            # Teleport
+            draw_teleport(self.teleport.x, self.teleport.y, self.teleport.u, self.teleport.v, self.teleport.w, self.teleport.h)
+
             # Map
             for obj in self.list_object: draw_object(obj.x, obj.y, obj.u, obj.v, obj.w, obj.h)
 
@@ -190,7 +197,7 @@ class Game(object):
             # Projectiles
             for projectile in self.projectiles:
                 projectile.update_position()
-                draw_projectile(projectile.x, projectile.y)
+                draw_projectile(projectile.x, projectile.y, projectile.owner)
 
             # Explosions
             for explosion in self.explosions: draw_explosion(explosion.x, explosion.y)

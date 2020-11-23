@@ -3,12 +3,16 @@ import pyxel
 from math import ceil
 
 
-def draw_enemy(x, y, life):
+def draw_enemy(x, y, life, life_max):
     """
         Aspect of the enemy
     """
     pyxel.blt(x-8, y-8, 0, 0, 105, 16, 15, 13)
-    pyxel.text(x+8, y-8, "{}".format(life), 8)
+    # Life bar
+    length = life/(life_max/16)
+    
+    pyxel.line(x-9, y-9, (x-8)+length, y-9, 7)
+    pyxel.line(x-8, y-8, (x-8)+length, y-8, 7)
 
 
 def draw_explosion(x, y):

@@ -192,7 +192,7 @@ class Game(object):
             draw_player(self.player.x, self.player.y)
 
             # Enemies
-            for enemy in self.enemies: draw_enemy(enemy.x, enemy.y, enemy.life)
+            for enemy in self.enemies: draw_enemy(enemy.x, enemy.y, enemy.life, enemy.life_max)
 
             # Projectiles
             for projectile in self.projectiles:

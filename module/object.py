@@ -2,6 +2,8 @@
     object.py : Class Object
 """
 
+import pyxel
+
 # Object Class
 class Object(object):
     def __init__(self, x, y, u, v, w, h):
@@ -54,6 +56,12 @@ class Object(object):
     @h.setter
     def h(self, value):
         self.__h = value
+
+    def draw(self):
+        """
+            Aspect of the object
+        """
+        pyxel.blt(self.x, self.y, 0, self.u, self.v, self.w, self.h, 13)
 
 class Grand_Roc(Object):
     def __init__(self, x, y, u, v, w, h):

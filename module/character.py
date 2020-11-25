@@ -2,6 +2,8 @@
     character.py : Character Class
 """
 
+import pyxel
+
 class Character(object):
     """
         Character class
@@ -80,6 +82,19 @@ class Player(Character):
     def reward(self, value):
         self.__reward = value
 
+    def draw(self):
+        """
+            Aspect of the player
+        """
+        pyxel.circ(self.x, self.y, 3, 10)
+
+    def draw_life(self):
+        length = self.life/(self.life_max/80)
+
+        pyxel.rect(1, 5, length, 5, 11)
+
+    def draw_exp(self):
+        pyxel.text(1, 13, 'TEST', 0)
 
 class Enemy(Character):
     """
@@ -107,3 +122,13 @@ class Enemy(Character):
         for i in range(-2, 0): tab_pyxels.append([self.x+6, self.y+i])
 
         return tab_pyxels
+
+    def draw(self):
+        """
+            Aspect of the enemy
+        """
+        pyxel.blt(self.x-8, self.y-8, 0, 0, 105, 16, 15, 13)
+        # Life bar
+        length = self.life/(self.life_max/16)
+
+        pyxel.rect(self.x-9, self.y-9, length, 2, 8)

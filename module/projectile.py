@@ -2,6 +2,8 @@
     projectile.py : projectile's Class
 """
 
+import pyxel
+
 class Projectile(object):
     """
         Projectile class
@@ -79,3 +81,12 @@ class Projectile(object):
 
     def max_range(self):
         return self.scope<=self.distance
+
+    def draw(self):
+        """
+            Aspect of the projectile
+        """
+        if self.owner=="player":
+            pyxel.circ(self.x, self.y, 1, 7)
+        else:
+            pyxel.circ(self.x, self.y, 1, 11)

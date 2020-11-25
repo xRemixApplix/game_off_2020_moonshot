@@ -13,7 +13,7 @@ import pyxel
 from module.object import Moyen_Roc, Grand_Roc, Petit_Roc, Orb, Teleport
 from module.character import Enemy, Player
 from module.projectile import Projectile
-from module.drawing import draw_player, draw_enemy, draw_orb, draw_target, draw_heart, draw_projectile, draw_explosion, draw_object, draw_teleport
+from module.drawing import draw_target, draw_explosion, draw_teleport
 
 # Main class
 class Game(object):
@@ -212,24 +212,26 @@ class Game(object):
             draw_teleport(self.teleport.x, self.teleport.y, self.teleport.u, self.teleport.v, self.teleport.w, self.teleport.h)
 
             # Map
-            for obj in self.list_object: draw_object(obj.x, obj.y, obj.u, obj.v, obj.w, obj.h)
+            for obj in self.list_object: obj.draw()
 
             # Player
-            draw_player(self.player.x, self.player.y)
+            self.player.draw()
 
             # Enemies
-            for enemy in self.enemies: draw_enemy(enemy.x, enemy.y, enemy.life, enemy.life_max)
+            for enemy in self.enemies: enemy.draw()
 
             # Projectiles
             for projectile in self.projectiles:
                 projectile.update_position()
-                draw_projectile(projectile.x, projectile.y, projectile.owner)
+                projectile.draw()
 
             # Explosions
             for explosion in self.explosions: draw_explosion(explosion.x, explosion.y)
 
             # Health bar
-            draw_heart(self.player.life_max, self.player.life)
+            self.player.draw_life()
+            # Exp bar
+            self.player.draw_exp()
 
             # Orbs
             pyxel.line(251, 1, 253, 1, 7)
@@ -239,7 +241,7 @@ class Game(object):
             pyxel.line(233, 1, 235, 1, 7)
             pyxel.line(233, 1, 233, 17, 7)
             pyxel.line(233, 17, 235, 17, 7)
-            if len(self.orb)>0: draw_orb(self.orb[0].x, self.orb[0].y, self.orb[0].u, self.orb[0].v, self.orb[0].w, self.orb[0].h)
+            if len(self.orb)>0: self.orb[0].draw()
         
         else:
             pyxel.text(110, 122, "GAME OVER", pyxel.frame_count % 16)
